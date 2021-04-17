@@ -12,11 +12,11 @@ b1 = baraja()
 initialCard = b1.initialCard()
 initialNumber = list(initialCard.values())[0]
 initialColor = list(initialCard.keys())[0]
-deck = b1.colorCards()
+deck = b1.baraja[0]
 deck[initialColor] -= 1
 
 
-b1Copy = b1.colorCards()
+b1Copy = b1.baraja[0]
 del b1Copy[initialColor]
 colorKey1 = list(b1Copy.keys())[0]
 del b1Copy[colorKey1]
@@ -34,7 +34,7 @@ cardPlayed = initialCard
 print(deck)
 
 
-""" while len(cardsP1)>=1:
+while len(cardsP1)>=1:
     system('clear')
     colorCardPlayed = list(cardPlayed.keys())[0]
     numberCardPlayed = list(cardPlayed.values())[0]
@@ -55,4 +55,4 @@ print(deck)
         del cardsP1[cartaJugada-1]
     else:
         addCards(cardsP1)
-print('You\'ve won!') """
+print('You\'ve won!')

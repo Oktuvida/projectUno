@@ -13,8 +13,6 @@ class baraja:
         'customizable':customizable,
         'specialRule':specialRule
         }]
-    def colorCards(self):
-        return self.baraja[0]
 
     def initialCard(self):
         colors = list(self.baraja[0].keys())
