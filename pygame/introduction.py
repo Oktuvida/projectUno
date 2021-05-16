@@ -1,35 +1,17 @@
 import pygame
 from main import game
+from time import sleep
+from os import environ
+from buttoms import Boton
+from mouse import Cursor
 
-
-class Cursor(pygame.Rect):
-    def __init__(self):
-        pygame.Rect.__init__(self, 0, 0, 1, 1) 
-        #El cursor se encontrara en la coordenada (0, 0) y sus lados seran de 1
-    def update (self):
-        self.left, self.top = pygame.mouse.get_pos() 
-        #Mover el rectangulo invisible segun la posicion del mouse.
-
-    
-class Boton (pygame.sprite.Sprite):
-    def __init__(self, imagen1, imagen2, x, y):
-        self.imagen_normal = imagen1
-        self.imagen_seleccionada = imagen2
-        self.imagen_actual = self.imagen_normal
-        self.rect = self.imagen_actual.get_rect()
-        self.rect.left, self.rect.top = (x, y)
-        
-    def update(self, pantalla, cursor):
-        if cursor.colliderect(self.rect):
-            self.imagen_actual = self.imagen_seleccionada
-        else: self.imagen_actual = self.imagen_normal
-        pantalla.blit(self.imagen_actual, self.rect)
         
         
 def introduction(): 
+    environ["SDL_VIDEO_WINDOW_POS"] = "0, 0"
     pygame.init()           #Inicializamos módulo
-    x = 800
-    y = 600
+    x = 960
+    y = 640
     ventana = pygame.display.set_mode((x, y))   #Le damos un tamaño a la ventana
     pygame.display.set_caption("¡Uno!")  #Le damos un nombre a la ventana
     
@@ -39,19 +21,19 @@ def introduction():
     jugar2 = pygame.image.load("pygame/imgIntroduction/jugar22.jpg")
     instrucciones1 = pygame.image.load("pygame/imgIntroduction/instrucciones1.jpg")
     instrucciones2 = pygame.image.load("pygame/imgIntroduction/instrucciones2.jpg")
-    #creditos1 = pygame.image.load("Creditos1.png")
-    #creditos2 = pygame.image.load("Creditos2.png")
-    
-    
+    fondInstruc = pygame.transform.scale(pygame.image.load("./esthetic/Instrucciones.png"), (x, y))
+    lArrow = pygame.transform.flip(pygame.transform.scale(pygame.image.load("./esthetic/Fde.png"), (50, 50)), True, False)
+    lArrowOp = pygame.transform.scale(pygame.image.load("./esthetic/Fizop.png"), (50, 50))
+    counter = 0
+
+
     reloj1 = pygame.time.Clock()
-    boton1 = Boton(jugar1, jugar2, 250, 350)
-    boton2 = Boton(instrucciones1, instrucciones2, 250, 450)
-    #boton3 = Boton(creditos1, creditos2, 250, 550)
+
+    boton1 = Boton(jugar1, jugar2, x//2-125, y//2+25)
+    boton2 = Boton(instrucciones1, instrucciones2, x//2-125, y//2+125)
+
     cursor1 = Cursor()
-    rojo = (200 , 0, 0)
-    azul = (0, 0, 200)
-    blanco = (255, 255, 255)
-    colordefondo = blanco
+
     Game_over = False            #Loop infinito   
     while Game_over != True:   
               
@@ -60,20 +42,29 @@ def introduction():
                     if cursor1.colliderect(boton1.rect):
                         game()
                     if cursor1.colliderect(boton2.rect):
-                        colordefondo = azul
+                        ventana.blit(fondInstruc, (0, 0))
+                        seeArrow = ventana.blit(lArrow, (75, 50))
+                        counter = 1
+                        
             if event.type == pygame.QUIT:  
                 Game_over = True
-
-        reloj1.tick(20)
-        ventana.blit(PinicioEscala, (0, 0))  
+        if counter%2!=0:
+            seeArrow = ventana.blit(lArrow, (75, 50)) 
+            if cursor1.colliderect(seeArrow):
+                seeArrow = ventana.blit(lArrowOp, (75, 50))
+                if pygame.mouse.get_pressed()[0]:
+                    counter = 0
+        if counter%2 == 0:
+            ventana.blit(PinicioEscala, (0, 0))  
+            boton1.update(ventana, cursor1)
+            boton2.update(ventana, cursor1)
         cursor1.update()
-        boton1.update(ventana, cursor1)
-        boton2.update(ventana, cursor1)
         
-        
+        reloj1.tick(20)
         pygame.display.flip()
-        
+
     #pygame.display.flip()
     pygame.quit()
 
-introduction()
+if __name__ == "__main__":  
+    introduction()

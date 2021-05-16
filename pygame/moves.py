@@ -20,23 +20,50 @@ def isEqual(playerDict, aDict):
         aKey = list(aDictCon.keys())[0]
         aValue = list(aDictCon.values())[0]
     except:
-        correctWord = False
-        while not correctWord:
-            try:
-                aKey = str(input("Digite un color: ")).capitalize()
-                if "+4" in aDict:
-                    aValue = "+4"
-                else:
-                    aValue = None                   
-                if not (aKey in colorCards()):
-                    print("Error. Color o palabra no disponible.\n")
-                    continue
-            except ValueError:
-                print("Usted no digitó un color o palabra.\n")
-            else:
-                correctWord = True
+        if list(aDict.values())[0] == playerKey:
+            return True
+        elif isinstance(aDict, str) and aDict == playerKey:
+            return True
+        else:
+            return False
 
     if (playerKey == aKey) or (playerValue == aValue):
         return True
     else:
         return False
+
+def changeColor(a):
+    b = list(a.values())[0]
+    if isinstance(b, str) and "change color" in b.lower():
+        return True
+    else: 
+        return False
+
+def isPlusFour(playerDeck, a):
+    b = list(a.values())[0]
+    if isinstance(b, str) and "+4" in b:
+        for element in playerDeck:
+            if isEqual(element, b):
+                return True
+
+def blockCard(a, counter):
+    b = list(a.values())[0]
+    aBool = False
+    if isinstance(b, dict):
+        bValues = list(b.values())[0]
+        if bValues == "Block" and counter%2==0:
+            counter +=1
+            aBool = True
+            return counter, aBool
+    return counter, aBool
+
+def reverseCard(a, counter):
+    b = list(a.values())[0]
+    aBool = False
+    if isinstance(b, dict):
+        bValues = list(b.values())[0]
+        if bValues == "Change direction" and counter%2==0:
+            counter +=1
+            aBool = True
+            return counter, aBool
+    return counter, aBool
