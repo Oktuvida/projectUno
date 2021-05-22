@@ -29,6 +29,8 @@ def isEqual(playerDict, aDict):
     
     if not ("+2") in aValue and ((playerKey == aKey) or (playerValue == aValue)):
         return True
+    elif "+2" in aValue and aValue == playerValue:
+        return True
     else:
         return False
 

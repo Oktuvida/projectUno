@@ -1,7 +1,7 @@
 import pygame as pg
 from main import game
 from time import sleep
-from os import environ, getcwd
+from os import environ
 from buttoms import Boton
 from mouse import Cursor
 
@@ -67,9 +67,7 @@ def introduction():
         reloj1.tick(20)
         pg.display.flip()
 
-    #pygame.display.flip()
     pg.quit()
 
 if __name__ == "__main__":  
-    print(getcwd())
-    introduction()
+    introduction() 
