@@ -22,20 +22,20 @@ def selColor(cardPlayed, conditional:bool=False):
     width = 350
     height = 80
     # buttomRed
-    redB = pg.transform.scale(pg.image.load("./esthetic/Rojo.png"), (width, height))
-    redBOp = pg.transform.scale(pg.image.load("./esthetic/RojoOp.png"), (width, height))
+    redB = "./esthetic/Rojo.png"
+    redBOp = "./esthetic/RojoOp.png"
 
     # ButtomBlue
-    blueB = pg.transform.scale(pg.image.load("./esthetic/Azul.png"), (width, height))
-    blueBOp = pg.transform.scale(pg.image.load("./esthetic/AzulOp.png"), (width, height))
+    blueB = "./esthetic/Azul.png"
+    blueBOp = "./esthetic/AzulOp.png"
 
     # ButtomGreen
-    greenB = pg.transform.scale(pg.image.load("./esthetic/Verde.png"), (width, height))
-    greenBOp = pg.transform.scale(pg.image.load("./esthetic/VerdeOp.png"), (width, height))
+    greenB = "./esthetic/Verde.png"
+    greenBOp = "./esthetic/VerdeOp.png"
 
     # ButtomYellow
-    yellowB = pg.transform.scale(pg.image.load("./esthetic/Amarillo.png"), (width, height))
-    yellowBOp = pg.transform.scale(pg.image.load("./esthetic/AmarilloOp.png"), (width, height))
+    yellowB = "./esthetic/Amarillo.png"
+    yellowBOp = "./esthetic/AmarilloOp.png"
 
     # Pos buttoms
     xPos = screenSize[0]//2-width//2
@@ -45,10 +45,10 @@ def selColor(cardPlayed, conditional:bool=False):
     mousePoint = Cursor()
 
     # Buttoms
-    rBot = Boton(redB, redBOp, xPos, yPos)
-    bBot = Boton(blueB, blueBOp, xPos, yPos + 3*height//2)
-    gBot = Boton(greenB, greenBOp, xPos, yPos + 3*height)
-    yBot = Boton(yellowB, yellowBOp, xPos, yPos + 9*height//2)
+    rBot = Boton(redB, redBOp, xPos, yPos, width, height)
+    bBot = Boton(blueB, blueBOp, xPos, yPos + 3*height//2, width, height)
+    gBot = Boton(greenB, greenBOp, xPos, yPos + 3*height, width, height)
+    yBot = Boton(yellowB, yellowBOp, xPos, yPos + 9*height//2, width, height)
 
     while True:
         screen.blit(background, (0, 0))
@@ -60,16 +60,16 @@ def selColor(cardPlayed, conditional:bool=False):
         for event in pg.event.get():
             if event.type == pg.MOUSEBUTTONDOWN:
                 if mousePoint.colliderect(rBot.rect):
-                    isVideo("./esthetic/esRojo.webm", 0, 0)
+                    isVideo("./esthetic/esRojo.webm")
                     return ({list(cardPlayed.keys())[0]:{"+4": "Red"}} if conditional else {list(cardPlayed.keys())[0]:"Red"})
                 elif mousePoint.colliderect(bBot.rect):
-                    isVideo("./esthetic/esAzul.webm", 0, 0)
+                    isVideo("./esthetic/esAzul.webm")
                     return ({list(cardPlayed.keys())[0]:{"+4": "Blue"}} if conditional else {list(cardPlayed.keys())[0]:"Blue"})
                 elif mousePoint.colliderect(gBot.rect):
-                    isVideo("./esthetic/esVerde.webm", 0, 0)
+                    isVideo("./esthetic/esVerde.webm")
                     return ({list(cardPlayed.keys())[0]:{"+4": "Green"}} if conditional else {list(cardPlayed.keys())[0]:"Green"})
                 elif mousePoint.colliderect(yBot.rect):
-                    isVideo("./esthetic/esAmarillo.webm", 0, 0)
+                    isVideo("./esthetic/esAmarillo.webm")
                     return ({list(cardPlayed.keys())[0]:{"+4": "Yellow"}} if conditional else {list(cardPlayed.keys())[0]:"Yellow"})
         mousePoint.update()
         pg.display.flip()

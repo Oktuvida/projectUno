@@ -26,8 +26,8 @@ def isEqual(playerDict, aDict):
             return True
         else:
             return False
-
-    if (playerKey == aKey) or (playerValue == aValue):
+    
+    if not ("+2") in aValue and ((playerKey == aKey) or (playerValue == aValue)):
         return True
     else:
         return False
@@ -36,7 +36,7 @@ def changeColor(a):
     b = list(a.values())[0]
     if isinstance(b, str) and "change color" in b.lower():
         return True
-    else: 
+    else:
         return False
 
 def isPlusFour(playerDeck, a):
