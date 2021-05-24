@@ -1,5 +1,6 @@
 from deck import deckCards
 
+# La clase jugador inicializa la baraja de un jugador.
 class jugador:
     def __init__(self, deck):
         self.mazo = list()

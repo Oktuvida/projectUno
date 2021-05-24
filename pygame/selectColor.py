@@ -3,6 +3,7 @@ from buttoms import Boton
 from mouse import Cursor
 from movies import isVideo
 
+# La clase selColor inicia una pantalla en Pygame mostrando un color a mostrar.
 def selColor(cardPlayed, conditional:bool=False):
     pg.init()
 
@@ -59,6 +60,8 @@ def selColor(cardPlayed, conditional:bool=False):
         yBot.update(screen, mousePoint)
         for event in pg.event.get():
             if event.type == pg.MOUSEBUTTONDOWN:
+                # Según el color que sea seleccionado se retornará el valor de la carta jugada, modificando únicamente 
+                # los values iniciales.
                 if mousePoint.colliderect(rBot.rect):
                     isVideo("./esthetic/esRojo.webm")
                     return ({list(cardPlayed.keys())[0]:{"+4": "Red"}} if conditional else {list(cardPlayed.keys())[0]:"Red"})

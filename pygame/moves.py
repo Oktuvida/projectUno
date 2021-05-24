@@ -1,12 +1,13 @@
 from deck import colorCards
 
+# Identifica si en la baraja de un jugador hay alguna carta válida para jugar
 def findEqualCard(playerDeck:list, aDict):
     for element in playerDeck: 
         if (isEqual(element, aDict)==True):
             return True
     return False
 
-
+# Identifica si una carta es válida para jugar con otra carta.
 def isEqual(playerDict, aDict):
     try:
         playerDictCon = dict(list(playerDict.values())[0])
@@ -35,6 +36,7 @@ def isEqual(playerDict, aDict):
     else:
         return False
 
+# Identifica si la carta jugada es cambio de color.
 def changeColor(a):
     b = list(a.values())[0]
     if isinstance(b, str) and "change color" in b.lower():
@@ -42,6 +44,7 @@ def changeColor(a):
     else:
         return False
 
+# Identifica si la carta jugada es +4
 def isPlusFour(a):
     b = list(a.values())[0]
     if isinstance(b, str) and "+4" in b:
@@ -49,6 +52,7 @@ def isPlusFour(a):
     else:
         return False
 
+# Identifica si la carta jugada es block
 def blockCard(a, counter):
     b = list(a.values())[0]
     aBool = False
@@ -60,6 +64,7 @@ def blockCard(a, counter):
             return counter, aBool
     return counter, aBool
 
+# Identifica si la carta jugada es inverse
 def reverseCard(a, counter):
     b = list(a.values())[0]
     aBool = False

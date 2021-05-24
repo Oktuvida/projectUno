@@ -1,5 +1,6 @@
 import pygame
 
+# La clase cursor obtiene la posición del mouse en todo momento.
 class Cursor(pygame.Rect):
     def __init__(self):
         pygame.Rect.__init__(self, 0, 0, 1, 1) 

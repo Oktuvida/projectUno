@@ -1,5 +1,5 @@
 import cv2
-
+# Es una función que ejecuta un vídeo, según la ruta path que se le asigne en los parámetros.
 def isVideo(pathFile:str, posX:int=0, posY:int=0):
     nameWindow = "¡Uno!"
     cv2.namedWindow(nameWindow)
