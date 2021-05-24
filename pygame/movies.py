@@ -1,7 +1,7 @@
 import cv2
 
 def isVideo(pathFile:str, posX:int=0, posY:int=0):
-    nameWindow = "video"
+    nameWindow = "¡Uno!"
     cv2.namedWindow(nameWindow)
     cv2.moveWindow(nameWindow, posX, posY)
 

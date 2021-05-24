@@ -1,7 +1,7 @@
+
 import pygame as pg 
 from deck import deckCards
 from player import jugador
-from random import randint
 from time import sleep
 from moves import isEqual, findEqualCard, changeColor, isPlusFour, blockCard, reverseCard
 from selectColor import selColor
@@ -16,6 +16,10 @@ def refreshScreen(frames, fps):
 def refreshDeck(mazoPlayerList, actualPlayer, mazoOPPlayerList, screenSize, width, height,
     initIndex, screen, cursor, rightArrowButtom, leftArrowButtom, dealCardsCounter,
     validDeal, dealCard, cardPlayed, frameCardOP, frameCard, frames, fps, nextPlay):
+    if actualPlayer > len(mazoPlayerList)-1:
+        actualPlayer = 0
+    elif actualPlayer < 0:
+        actualPlayer = len(mazoPlayerList)-1
     cursor.update()
     xPos = screenSize[0]//5-width
     yPos = screenSize[0]//2+height//6
@@ -67,7 +71,7 @@ def refreshDeck(mazoPlayerList, actualPlayer, mazoOPPlayerList, screenSize, widt
                 sleep(0.4)
     if dealCardsCounter < 2 and validDeal:
         sleep(0.3)
-    return nextPlay, initIndex, imgDeckPlayer, dealCardsCounter
+    return nextPlay, initIndex, imgDeckPlayer, dealCardsCounter, actualPlayer
 
 
 def minimizeWindow():
@@ -76,7 +80,9 @@ def minimizeWindow():
 def restoreWindow(screenSize):
     pg.display.set_mode(screenSize)
 
+
 def game ():
+
     #Posición de ventana
     pg.init()
     
@@ -164,6 +170,7 @@ def game ():
     isBlockCard = False
     
     #Reverse Block card
+    playDirection = 1
     reverseCounter = 0
     isReverseCard = False
 
@@ -190,14 +197,33 @@ def game ():
     while not gameOver:
         if actualPlayer > len(mazoPlayerList)-1:
             actualPlayer = 0
-        if actualPlayer < 0:
+        elif actualPlayer < 0:
             actualPlayer = len(mazoPlayerList)-1
         #Carta jugada
         figurePlayed = Boton(list(cardPlayed.keys())[0], cardPlayedOP, posX, posY, width, height)
-            
-            
-
+        
         nextPlay = False
+
+        if len(mazoPlayerList[actualPlayer]) < 1 and not buttomPressed[actualPlayer]:
+            deckCard.addCard(mazoPlayerList[actualPlayer], mazoOPPlayerList[actualPlayer])
+
+            minimizeWindow()
+            isVideo("./esthetic/blockCard.webm")
+            isVideo("./esthetic/sigTurn.webm")
+            restoreWindow(screenSize)
+
+            nextPlay = True
+            actualPlayer+= ((1*playDirection))
+        elif len(mazoPlayerList[actualPlayer-1]) < 1 and buttomPressed[actualPlayer-1]:
+            minimizeWindow()
+            if actualPlayer-1 == 0:
+                isVideo("./esthetic/win1.webm")
+                winPlayer = 1
+            else:
+                isVideo("./esthetic/win2.webm")
+                winPlayer = 2
+            restoreWindow(screenSize)
+            nextPlay = gameOver = True
         
 
         while not nextPlay:
@@ -226,7 +252,7 @@ def game ():
                 dealCard.play()
                 deckCard.addCard(mazoPlayerList[actualPlayer], mazoOPPlayerList[actualPlayer])
                 nextPlay = True
-                actualPlayer+= 1
+                actualPlayer+= (1*playDirection)
                 minimizeWindow()
                 isVideo("./esthetic/sigTurn.webm")
                 restoreWindow(screenSize)
@@ -242,7 +268,7 @@ def game ():
                 mazoOPPlayerList, screenSize, width, height,
                 initIndex, screen, cursor, rightArrowButtom, leftArrowButtom, dealCardsCounter,
                 validDeal, dealCard, cardPlayed, frameCardOP, frameCard, frames, fps, nextPlay)
-            nextPlay, initIndex, imgDeckPlayer, dealCardsCounter = refreshDeck(*paramsFunct)
+            nextPlay, initIndex, imgDeckPlayer, dealCardsCounter, actualPlayer = refreshDeck(*paramsFunct)
             validDeal = False
                 
 
@@ -255,7 +281,7 @@ def game ():
 
                 cardPlayed[list(cardPlayed.keys())[0]] = list(dict(list(cardPlayed.values())[0]).keys())[0]
                 
-                actualPlayer += 1
+                actualPlayer += (1*playDirection)
 
                 minimizeWindow()
                 isVideo("./esthetic/blockCard.webm")
@@ -266,7 +292,8 @@ def game ():
                 reverseCounter, isReverseCard = reverseCard(cardPlayed, reverseCounter)
                 if isReverseCard and allCardsTaken:
                     dealCardsCounter += 1
-                    actualPlayer -= 1
+                    playDirection *= -1
+                    actualPlayer += (1*playDirection)
                     cardPlayed[list(cardPlayed.keys())[0]] = list(dict(list(cardPlayed.values())[0]).keys())[0]
                     nextPlay = validDeal = True
 
@@ -275,22 +302,28 @@ def game ():
                     isVideo("./esthetic/sigTurn.webm")
                     restoreWindow(screenSize)
                 
-                elif changeColor(cardPlayed) and allCardsTaken and not ("+4" == list(cardPlayed.values())[0]):
+                elif changeColor(cardPlayed) and allCardsTaken and not (isPlusFour(cardPlayed)):
                     try:
                         if not ("+2" in list(dict(list(cardPlayed.values())[0]).values())[0]):
-                            if "+4" in list(cardPlayed.values())[0]:
-                                cardPlayed = selColor(cardPlayed, True)
-                            else:
-                                cardPlayed = selColor(cardPlayed)
-                    except:
-                        if "+4" in list(cardPlayed.values())[0]:
-                            cardPlayed = selColor(cardPlayed, True)
-                        else:
                             cardPlayed = selColor(cardPlayed)
-                    
+                    except:
+                        cardPlayed = selColor(cardPlayed)
                     nextPlay =  validDeal = True
                     dealCardsCounter += 1
-                    actualPlayer += 1
+                    actualPlayer += (1*playDirection)
+                    sleep(0.1)
+                    
+                    minimizeWindow()
+                    isVideo("./esthetic/sigTurn.webm")
+                    restoreWindow(screenSize)
+
+                    
+                elif isPlusFour(cardPlayed) and not ("+4" == list(cardPlayed.values())[0]):
+                    cardPlayed = selColor(cardPlayed, True)
+
+                    nextPlay =  validDeal = True
+                    dealCardsCounter += 1
+                    actualPlayer += (1*playDirection)
                     sleep(0.1)
                     
                     minimizeWindow()
@@ -309,14 +342,23 @@ def game ():
                             try:
                                 if not ("change color" in list(cardPlayed.values())[0].lower()):
                                     isVideo("./esthetic/sigTurn.webm")
-
+                                if isPlusFour(cardPlayed):
+                                    cardTakenCounter += 4
                             except:
                                 isVideo("./esthetic/sigTurn.webm")
+                                if isPlusFour(cardPlayed):
+                                    cardTakenCounter += 4
+                                else:
+                                    try:
+                                        if "+2" in list(dict(list(cardPlayed.values())[0]).values())[0]:
+                                            cardTakenCounter += 2
+                                    except:
+                                        pass
                             restoreWindow(screenSize)
                                 
                             blockCounter += 1
                             reverseCounter += 1
-                            actualPlayer += 1
+                            actualPlayer += (1*playDirection)
                             
                             dealCardsCounter += 1
                             nextPlay = validDeal = True
@@ -332,13 +374,11 @@ def game ():
                     if cursor.colliderect(cardTakenButtom.rect) and pg.mouse.get_pressed()[0]:
                         cardsTaken += 1
                         if "+4" in list(cardPlayed.values())[0]:
-                            cardTakenCounter = 4
                             if cardTakenCounter == cardsTaken:
                                 cardPlayed[list(cardPlayed.keys())[0]] = list(dict(list(cardPlayed.values())[0]).values())[0]
                         else:
                             try:
                                 if "+2" in list(dict(list(cardPlayed.values())[0]).values())[0]:
-                                    cardTakenCounter = 2
                                     if cardTakenCounter == cardsTaken:
                                         cardPlayed[list(cardPlayed.keys())[0]] = list(dict(list(cardPlayed.values())[0]).keys())[0]
                                 else:
@@ -353,53 +393,30 @@ def game ():
                             minimizeWindow()
                             isVideo("./esthetic/sigTurn.webm")
                             restoreWindow(screenSize)
-
-                            cardsTaken = 0
-                            actualPlayer += 1
+                            cardsTaken = cardTakenCounter = noCardCounter = 0
+                            actualPlayer += (1*playDirection)
                             blockCounter += 1
                             reverseCounter += 1
-                            noCardCounter = 0
                             dealCardsCounter += 1
                             allCardsTaken = validDeal =  True
                         sleep(0.1)
 
             refreshScreen(frames, fps)
         refreshScreen(frames, fps)
-        if actualPlayer > len(mazoPlayerList)-1:
-            actualPlayer = 0
-        if actualPlayer < 0:
-            actualPlayer = len(mazoPlayerList)-1
 
-        if len(mazoPlayerList[actualPlayer]) < 1 and not buttomPressed[actualPlayer]:
-            deckCard.addCard(mazoPlayerList[actualPlayer], mazoOPPlayerList[actualPlayer])
+    if not gameOver:
+        imgPlayerWin = Boton("./esthetic/Win{0}.png".format(winPlayer), "./esthetic/Win{0}.png".format(winPlayer), 0, 0, 960, 640)
 
-            minimizeWindow()
-            isVideo("./esthetic/blockCard.webm")
-            isVideo("./esthetic/sigTurn.webm")
-            restoreWindow(screenSize)
-
-            nextPlay = True
-            actualPlayer+= 1
-        elif len(mazoPlayerList[actualPlayer]) < 1 and buttomPressed[actualPlayer]:
-            minimizeWindow()
-            if actualPlayer == 0:
-                isVideo("./esthetic/win1.webm")
-                winPlayer = 1
-            else:
-                isVideo("./esthetic/win2.webm")
-                winPlayer = 2
-            restoreWindow(screenSize)
-            break
-    imgPlayerWin = Boton("./esthetic/Win{0}.png".format(winPlayer), "./esthetic/Win{0}.png".format(winPlayer), 0, 0, 960, 640)
-
-    closeWindow = False
-    while not closeWindow:
-        for event in pg.event.get():
-            if event.type == pg.QUIT:
-                closeWindow = True
-        
-        imgPlayerWin.update(screen, cursor, False)
+        closeWindow = False
+        while not closeWindow:
+            for event in pg.event.get():
+                if event.type == pg.QUIT:
+                    closeWindow = True
+            
+            imgPlayerWin.update(screen, cursor, False)
 
 
     pg.mouse.set_visible(1)
     return 0
+
+

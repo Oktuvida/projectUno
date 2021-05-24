@@ -28,8 +28,9 @@ def isEqual(playerDict, aDict):
             return False
     
     if not ("+2") in aValue and ((playerKey == aKey) or (playerValue == aValue)):
+        
         return True
-    elif "+2" in aValue and aValue == playerValue:
+    elif ("+2" in aValue or "+4" in aValue) and aValue == playerValue:
         return True
     else:
         return False
@@ -41,12 +42,12 @@ def changeColor(a):
     else:
         return False
 
-def isPlusFour(playerDeck, a):
+def isPlusFour(a):
     b = list(a.values())[0]
     if isinstance(b, str) and "+4" in b:
-        for element in playerDeck:
-            if isEqual(element, b):
-                return True
+        return True
+    else:
+        return False
 
 def blockCard(a, counter):
     b = list(a.values())[0]
